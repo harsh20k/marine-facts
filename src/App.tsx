@@ -19,7 +19,7 @@ function App() {
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
+    <div className="page-wrap" style={{ textAlign: "center", marginTop: "50px" }}>
       <h1>🌊 Marine Facts with Categories</h1>
 
       {/* Radio Buttons */}
