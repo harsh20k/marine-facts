@@ -1,35 +1,69 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [category, setCategory] = useState<string>("animals"); // default selection
+  const [fact, setFact] = useState<string>("Pick a category and get a marine fact!");
+
+  const getFact = async () => {
+    try {
+      const res = await fetch(`/api/fact?category=${category}`);
+      const data: { fact?: string; error?: string } = await res.json();
+      if (data.fact) {
+        setFact(data.fact);
+      } else {
+        setFact(data.error || "Oops! No fact found.");
+      }
+    } catch (error) {
+      setFact("Error fetching fact.");
+    }
+  };
 
   return (
-    <>
+    <div style={{ textAlign: "center", marginTop: "50px" }}>
+      <h1>🌊 Marine Facts with Categories</h1>
+
+      {/* Radio Buttons */}
+      <div style={{ marginBottom: "20px" }}>
+        <label style={{ marginRight: "15px" }}>
+          <input
+            type="radio"
+            value="animals"
+            checked={category === "animals"}
+            onChange={(e) => setCategory(e.target.value)}
+          />
+          🐋 Animals
+        </label>
+
+        <label style={{ marginRight: "15px" }}>
+          <input
+            type="radio"
+            value="geography"
+            checked={category === "geography"}
+            onChange={(e) => setCategory(e.target.value)}
+          />
+          🌍 Geography
+        </label>
+
+        <label>
+          <input
+            type="radio"
+            value="climate"
+            checked={category === "climate"}
+            onChange={(e) => setCategory(e.target.value)}
+          />
+          🌡️ Climate
+        </label>
+      </div>
+
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+        <button onClick={getFact} style={{ padding: "10px" }}>
+          Get Fact
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+
+      <p style={{ marginTop: "20px" }}>{fact}</p>
+    </div>
+  );
 }
 
-export default App
+export default App;
